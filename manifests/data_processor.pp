@@ -55,7 +55,7 @@
 #     - 'https://hdp-prod.example.com:9091/in'
 #     - 'https://hdp-staging.example.com:9091/in'
 #
-class hdp::report_processor (
+class hdp::data_processor (
   HDP::Url $hdp_url = "https://hdp.puppet:9091",
   Boolean $enable_reports = true,
   Boolean $manage_routes = true,

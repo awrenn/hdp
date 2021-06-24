@@ -28,7 +28,7 @@
 #
 # @example Configuration via Hiera with custom port
 #   ---
-#   hdp::report_processor::hdp_url: 'https://hdp.example.com:8443/in'
+#   hdp::report_processor::hdp_url: 'https://hdp.example.com:9091/in'
 #   hdp::report_processor::pe_console: 'pe-console.example.com'
 #
 # @example Configuration in a manifest with default port
@@ -44,7 +44,7 @@
 #   # Settings applied to both a master and compilers
 #   class { 'profile::masters_and_compilers':
 #     class { 'hdp::report_processor':
-#       hdp_url  => 'https://hdp.example.com:8443/in',
+#       hdp_url  => 'https://hdp.example.com:9091/in',
 #       pe_console => 'pe-console.example.com',
 #     }
 #   }
@@ -52,8 +52,8 @@
 # @example Send data to two HDP servers
 #   ---
 #   hdp::report_processor::hdp_url:
-#     - 'https://hdp-prod.example.com:8443/in'
-#     - 'https://hdp-staging.example.com:8443/in'
+#     - 'https://hdp-prod.example.com:9091/in'
+#     - 'https://hdp-staging.example.com:9091/in'
 #   hdp::report_processor::pe_console: 'pe-console.example.com'
 #
 class hdp::report_processor (

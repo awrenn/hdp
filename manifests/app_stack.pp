@@ -48,6 +48,9 @@
 #   Should match the names in cert_file if provided.
 #   If ca_server is used instead, this name will be used as certname.
 #
+# @param String dns_alt_names
+#   Extra dns names attached to the puppet cert, can be used to bypass certname collisions
+#
 # @param String hdp_version
 #   The version of the HDP containers to use
 #
@@ -90,8 +93,11 @@ class hdp::app_stack (
   Optional[String] $key_file = undef,
   Optional[String] $cert_file = undef,
 
+  Boolean $use_host_certs = false,
 
   String $dns_name = 'hdp.puppet',
+  Array[String] $dns_alt_names = [],
+
   String $image_prefix = 'puppet/hdp-',
   String $hdp_version = '0.0.1',
   String $log_driver = 'journald',
@@ -163,11 +169,29 @@ class hdp::app_stack (
         'cert_file'        => $cert_file,
         'ca_cert_file'     => $ca_cert_file,
         'dns_name'         => $dns_name,
+        'dns_alt_names'    => $dns_alt_names,
         'hdp_user'         => $hdp_user,
         'root_dir'         => '/opt/puppetlabs/hdp',
         'max_es_memory'    => $max_es_memory,
       }),
     ;
+  }
+
+  if $facts['certname'] == $dns_name {
+    file { 
+      "/opt/puppetlabs/hdp/ssl/data-ingestion.cert.pem":
+        ensure => 'link',
+        target => "/etc/puppetlabs/puppet/ssl/certs/${dns_name}.pem"
+      ;
+      "/opt/puppetlabs/hdp/ssl/data-ingestion.key.pem":
+        ensure => 'link',
+        target => "/etc/puppetlabs/puppet/ssl/private_keys/${dns_name}.pem"
+      ;
+      "/opt/puppetlabs/hdp/ssl/ca.cert.pem":
+        ensure => 'link',
+        target => "/etc/puppetlabs/puppet/ssl/certs/ca.pem"
+      ;
+    }
   }
 
   docker_compose { 'hdp':

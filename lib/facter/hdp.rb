@@ -4,6 +4,7 @@ require 'json'
 
 Facter.add(:hdp_health) do
   confine kernel: 'Linux'
+  out = {}
   setcode do
     if Dir.exist?('/opt/puppetlabs/hdp')
       begin
@@ -26,10 +27,11 @@ Facter.add(:hdp_health) do
           image_data[key.to_s] = value
         end
 
-        image_data
+        out['image_data'] = image_data
+        out['puppet_user'] = Facter::Core::Execution.execute('id -u puppet').to_i
       rescue
-        nil
       end
     end
   end
 end
+

@@ -120,6 +120,11 @@ class hdp::app_stack (
 
   }
 
+  $mount_host_certs=$trusted['certname'] == $dns_name
+  if $mount_host_certs {
+    $hdp_user='puppet'
+  }
+
   file {
     default:
       owner   => 'root',
@@ -171,8 +176,7 @@ class hdp::app_stack (
         'hdp_user'         => $hdp_user,
         'root_dir'         => '/opt/puppetlabs/hdp',
         'max_es_memory'    => $max_es_memory,
-        'mount_host_certs' => $trusted['certname'] == $dns_name 
-      }),
+        'mount_host_certs' => $mount_host_certs,
     ;
   }
 

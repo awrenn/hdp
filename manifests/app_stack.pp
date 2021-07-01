@@ -123,7 +123,7 @@ class hdp::app_stack (
 
   $mount_host_certs=$trusted['certname'] == $dns_name
   if $mount_host_certs {
-    $final_hdp_user=facts['hdp_health']['puppet_user']
+    $final_hdp_user=$facts['hdp_health']['puppet_user']
   } else {
     $final_hdp_user=$hdp_user
   }

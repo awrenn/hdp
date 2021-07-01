@@ -138,14 +138,14 @@ class hdp::app_stack (
     '/opt/puppetlabs/hdp':
       ensure => directory,
       mode   => '0775',
-      owner  => $hdp_user,
-      group  => $hdp_user,
+      owner  => $final_hdp_user,
+      group  => $final_hdp_user,
     ;
     '/opt/puppetlabs/hdp/ssl':
       ensure => directory,
       mode   => '0700',
-      owner  => $hdp_user,
-      group  => $hdp_user,
+      owner  => $final_hdp_user,
+      group  => $final_hdp_user,
     ;
     ## Elasticsearch container FS is all 1000
     ## While not root, this very likely crashes with something with passwordless sudo on the main host
@@ -159,8 +159,8 @@ class hdp::app_stack (
     '/opt/puppetlabs/hdp/redis':
       ensure => directory,
       mode   => '0700',
-      owner  => $hdp_user,
-      group  => $hdp_user,
+      owner  => $final_hdp_user,
+      group  => $final_hdp_user,
     ;
     '/opt/puppetlabs/hdp/docker-compose.yaml':
       ensure  => file,

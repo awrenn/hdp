@@ -29,6 +29,7 @@ Facter.add(:hdp_health) do
 
         out['image_data'] = image_data
         out['puppet_user'] = Facter::Core::Execution.execute('id -u puppet').to_i
+        out
       rescue
       end
     end

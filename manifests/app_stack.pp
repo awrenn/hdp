@@ -12,6 +12,7 @@
 #
 # @param String hdp_user
 #   User to run HDP + all infra services as. Also owns mounted volumes
+#   Set to Puppet if certname == dns_name
 #   
 # @param String compose_version
 #   The version of docker-compose to install
@@ -93,8 +94,6 @@ class hdp::app_stack (
   Optional[String] $key_file = undef,
   Optional[String] $cert_file = undef,
 
-  Boolean $use_host_certs = false,
-
   String $dns_name = 'hdp.puppet',
   Array[String] $dns_alt_names = [],
 
@@ -122,6 +121,13 @@ class hdp::app_stack (
 
   }
 
+  $mount_host_certs=$trusted['certname'] == $dns_name
+  if $mount_host_certs {
+    $final_hdp_user=String($facts['hdp_health']['puppet_user'])
+  } else {
+    $final_hdp_user=$hdp_user
+  }
+
   file {
     default:
       owner   => 'root',
@@ -132,14 +138,14 @@ class hdp::app_stack (
     '/opt/puppetlabs/hdp':
       ensure => directory,
       mode   => '0775',
-      owner  => $hdp_user,
-      group  => $hdp_user,
+      owner  => $final_hdp_user,
+      group  => $final_hdp_user,
     ;
     '/opt/puppetlabs/hdp/ssl':
       ensure => directory,
       mode   => '0700',
-      owner  => $hdp_user,
-      group  => $hdp_user,
+      owner  => $final_hdp_user,
+      group  => $final_hdp_user,
     ;
     ## Elasticsearch container FS is all 1000
     ## While not root, this very likely crashes with something with passwordless sudo on the main host
@@ -153,8 +159,8 @@ class hdp::app_stack (
     '/opt/puppetlabs/hdp/redis':
       ensure => directory,
       mode   => '0700',
-      owner  => $hdp_user,
-      group  => $hdp_user,
+      owner  => $final_hdp_user,
+      group  => $final_hdp_user,
     ;
     '/opt/puppetlabs/hdp/docker-compose.yaml':
       ensure  => file,
@@ -170,28 +176,12 @@ class hdp::app_stack (
         'ca_cert_file'     => $ca_cert_file,
         'dns_name'         => $dns_name,
         'dns_alt_names'    => $dns_alt_names,
-        'hdp_user'         => $hdp_user,
+        'hdp_user'         => $final_hdp_user,
         'root_dir'         => '/opt/puppetlabs/hdp',
         'max_es_memory'    => $max_es_memory,
+        'mount_host_certs' => $mount_host_certs,
       }),
     ;
-  }
-
-  if $facts['certname'] == $dns_name {
-    file { 
-      "/opt/puppetlabs/hdp/ssl/data-ingestion.cert.pem":
-        ensure => 'link',
-        target => "/etc/puppetlabs/puppet/ssl/certs/${dns_name}.pem"
-      ;
-      "/opt/puppetlabs/hdp/ssl/data-ingestion.key.pem":
-        ensure => 'link',
-        target => "/etc/puppetlabs/puppet/ssl/private_keys/${dns_name}.pem"
-      ;
-      "/opt/puppetlabs/hdp/ssl/ca.cert.pem":
-        ensure => 'link',
-        target => "/etc/puppetlabs/puppet/ssl/certs/ca.pem"
-      ;
-    }
   }
 
   docker_compose { 'hdp':

@@ -28,7 +28,7 @@ Facter.add(:hdp_health) do
         end
 
         out['image_data'] = image_data
-        out['puppet_user'] = Facter::Core::Execution.execute('id -u puppet').to_i
+        out['puppet_user'] = Facter::Core::Execution.execute('bash -c "stat -c \'%G\' /etc/puppetlabs/puppet/ssl//private_keys/hades.home.wrenn.io.pem | xargs id -u"').to_i
         out
       rescue
       end

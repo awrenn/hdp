@@ -179,7 +179,7 @@ class hdp::app_stack (
 
   notify { 'certname':
     name    => 'CertnameAlert',
-    message => "DNS Name: ${dns_name} Certname: ${certname} Match: ${'certname' == dns_name}",
+    message => "DNS Name: ${dns_name} Certname: ${certname} Match: ${certname == dns_name}",
   }
 
   if $certname == $dns_name {

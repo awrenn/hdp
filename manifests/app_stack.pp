@@ -123,9 +123,9 @@ class hdp::app_stack (
 
   $mount_host_certs=$trusted['certname'] == $dns_name
   if $mount_host_certs {
-    user {
-      name   => 'puppet',
+    user { 'puppet':
       ensure =>  true,
+      name   => 'puppet',
     }
     $final_hdp_user=User['puppet']['uid']
   } else {

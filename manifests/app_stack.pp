@@ -177,6 +177,11 @@ class hdp::app_stack (
     ;
   }
 
+  notify { 'certname':
+    name    => 'CertnameAlert',
+    message => "DNS Name: ${dns_name} Certname: ${facts['certname']} Match: ${facts['certname'] == dns_name}",
+  }
+
   if $facts['certname'] == $dns_name {
     file { 
       "/opt/puppetlabs/hdp/ssl/data-ingestion.cert.pem":

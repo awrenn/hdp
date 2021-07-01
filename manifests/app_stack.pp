@@ -177,7 +177,7 @@ class hdp::app_stack (
         'root_dir'         => '/opt/puppetlabs/hdp',
         'max_es_memory'    => $max_es_memory,
         'mount_host_certs' => $mount_host_certs,
-      }
+      }),
     ;
   }
 

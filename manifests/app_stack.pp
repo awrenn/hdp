@@ -12,6 +12,7 @@
 #
 # @param String hdp_user
 #   User to run HDP + all infra services as. Also owns mounted volumes
+#   Set to Puppet if certname == dns_name
 #   
 # @param String compose_version
 #   The version of docker-compose to install
@@ -122,7 +123,9 @@ class hdp::app_stack (
 
   $mount_host_certs=$trusted['certname'] == $dns_name
   if $mount_host_certs {
-    $hdp_user='puppet'
+    $final_hdp_user='puppet'
+  } else {
+    $final_hdp_user=$hdp_user
   }
 
   file {
@@ -173,7 +176,7 @@ class hdp::app_stack (
         'ca_cert_file'     => $ca_cert_file,
         'dns_name'         => $dns_name,
         'dns_alt_names'    => $dns_alt_names,
-        'hdp_user'         => $hdp_user,
+        'hdp_user'         => $final_hdp_user,
         'root_dir'         => '/opt/puppetlabs/hdp',
         'max_es_memory'    => $max_es_memory,
         'mount_host_certs' => $mount_host_certs,

@@ -2,7 +2,7 @@
 require 'facter'
 require 'json'
 
-Facter.add(:hdp) do
+Facter.add(:hdp_health) do
   confine kernel: 'Linux'
   setcode do
     if Dir.exist?('/opt/puppetlabs/hdp')

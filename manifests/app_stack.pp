@@ -93,8 +93,6 @@ class hdp::app_stack (
   Optional[String] $key_file = undef,
   Optional[String] $cert_file = undef,
 
-  Boolean $use_host_certs = false,
-
   String $dns_name = 'hdp.puppet',
   Array[String] $dns_alt_names = [],
 
@@ -173,30 +171,9 @@ class hdp::app_stack (
         'hdp_user'         => $hdp_user,
         'root_dir'         => '/opt/puppetlabs/hdp',
         'max_es_memory'    => $max_es_memory,
+        'mount_host_certs' => $trusted['certname'] == $dns_name 
       }),
     ;
-  }
-
-  notify { 'certname':
-    name    => 'CertnameAlert',
-    message => "DNS Name: ${dns_name} Certname: ${trusted['certname']} Match: ${trusted['certname'] == dns_name}",
-  }
-
-  if $trusted['certname'] == $dns_name {
-    file { 
-      "/opt/puppetlabs/hdp/ssl/data-ingestion.cert.pem":
-        ensure => 'link',
-        target => "/etc/puppetlabs/puppet/ssl/certs/${dns_name}.pem"
-      ;
-      "/opt/puppetlabs/hdp/ssl/data-ingestion.key.pem":
-        ensure => 'link',
-        target => "/etc/puppetlabs/puppet/ssl/private_keys/${dns_name}.pem"
-      ;
-      "/opt/puppetlabs/hdp/ssl/ca.cert.pem":
-        ensure => 'link',
-        target => "/etc/puppetlabs/puppet/ssl/certs/ca.pem"
-      ;
-    }
   }
 
   docker_compose { 'hdp':

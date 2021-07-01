@@ -8,6 +8,8 @@
       Optional[String] $key_file,
       Optional[String] $cert_file,
 
+      Boolean $mount_host_certs,
+
       String $dns_name,
       Array[String] $dns_alt_names,
       String $hdp_user,
@@ -44,6 +46,12 @@ services:
     links:
       - elasticsearch
       - redis
+    <% if $mount_host_certs { %>
+    volumes:
+      - "/etc/puppetlabs/puppet/ssl/certs/<%= $dns_name %>.pem:/etc/puppetlabs/puppetdb/ssl/data-ingestion.cert.pem:ro"
+      - "/etc/puppetlabs/puppet/ssl/private_keys/<%= $dns_name %>.pem:/etc/puppetlabs/puppetdb/ssl/data-ingestion.key.pem:ro"
+      - "/etc/puppetlabs/puppet/ssl/certs/ca.pem:/etc/puppetlabs/puppetdb/ssl/ca.pem:ro"
+    <% } %>
   elasticsearch:
     ## TODO acwrenn - host these images ourselves, alongside data-ingestion
     image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.1"

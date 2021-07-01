@@ -9,6 +9,7 @@
       Optional[String] $cert_file,
 
       String $dns_name,
+      Array[String] $dns_alt_names,
       String $hdp_user,
       String $root_dir,
       String $max_es_memory,
@@ -38,6 +39,7 @@ services:
       <% if $cert_file { %>
       - "HDP_CERTFILE=<%= $cert_file%>"
       <% } %>
+      - "HDP_DNSNAMES=<%= join($dns_alt_names, ',') %>"
       - "HDP_NAME=<%= $dns_name %>"
     links:
       - elasticsearch

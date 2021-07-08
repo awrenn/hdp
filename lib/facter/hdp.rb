@@ -36,3 +36,8 @@ Facter.add(:hdp_health) do
   end
 end
 
+Facter.add(:hdp) do
+  confine kernel: 'Linux'
+  end
+end
+

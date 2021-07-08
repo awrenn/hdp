@@ -38,6 +38,5 @@ end
 
 Facter.add(:hdp) do
   confine kernel: 'Linux'
-  end
 end
 

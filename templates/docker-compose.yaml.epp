@@ -74,7 +74,7 @@ services:
     volumes:
       - "<%= $root_dir %>/redis:/data"
     command: "redis-server --appendonly yes"
-  ui
+  ui:
     image: "<% if $image_repository { %><%= $image_repository %>/<% } %><%= $image_prefix %>ui<%= $hdp_version %>"
     user: "<%= $hdp_user %>:<%= $hdp_user %>"
     ports:
